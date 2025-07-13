@@ -1,0 +1,466 @@
+/* ========================================= */
+/* 1. Variáveis                              */
+/* ========================================= */
+:root {
+    --primary-color: #4CAF50; /* Verde para sucesso/iniciar sorteio */
+    --secondary-color: #FFC107; /* Amarelo para atenção/recomeçar */
+    --tertiary-color: #03A9F4; /* Azul para elementos de informação */
+    --danger-color: #F44336; /* Vermelho para erros */
+    --dark-color: #4682B4; /* Azul escuro (Steel Blue) para títulos e outros */
+    --light-color: #fff;
+    --background-light: #f4f4f4; /* Fundo geral claro */
+    --background-dark: #212121; /* Fundo do pop-up */
+    --font-family-base: 'Roboto', sans-serif;
+    --line-height-base: 1.6;
+    --text-color-base: #444; /* Cor padrão para textos */
+    --border-radius-base: 5px;
+    --box-shadow-base: 0 4px 8px rgba(0,0,0,0.1);
+    --spacing-sm: 10px;
+    --spacing-md: 20px;
+    --spacing-lg: 30px;
+}
+
+/* ========================================= */
+/* 2. Reset                                  */
+/* ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ========================================= */
+/* 3. Base/Globais                           */
+/* ========================================= */
+body {
+    font-family: var(--font-family-base);
+    line-height: var(--line-height-base);
+    color: var(--text-color-base);
+    background-color: var(--background-light);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+h1, h2, h3 {
+    color: var(--dark-color); /* Usando o azul escuro para títulos */
+    margin-bottom: var(--spacing-md);
+    text-align: center;
+}
+
+p {
+    margin-bottom: var(--spacing-sm);
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary-color);
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--secondary-color);
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-base);
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-transform: uppercase;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* ========================================= */
+/* 4. Layout                                 */
+/* ========================================= */
+.container {
+    background-color: var(--light-color);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--box-shadow-base);
+    max-width: 600px;
+    margin: var(--spacing-lg) auto;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+header {
+    background-color: var(--light-color); /* Barra branca */
+    color: var(--dark-color); /* Cor do texto no cabeçalho (azul) */
+    text-align: center;
+    padding: var(--spacing-md) 0;
+    width: 100%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Sombra para a barra branca */
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.company-logo {
+    height: 80px;
+    max-width: 200px;
+    object-fit: contain;
+    margin-bottom: 8px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6), /* Brilho branco */
+                0 0 25px var(--secondary-color); /* Sombra amarela (mais direta) */
+    border-radius: var(--border-radius-base); /* Usar a variável */
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.05);
+    /* Transição para efeito hover */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.company-logo:hover {
+    transform: scale(1.05); /* Pequeno zoom no hover */
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), /* Brilho mais forte */
+                0 0 35px var(--secondary-color); /* Sombra amarela mais forte */
+}
+
+header h1 {
+    margin-bottom: 0;
+    font-size: 2em;
+    text-align: center;
+    color: var(--dark-color); /* Título azul no cabeçalho */
+}
+
+footer {
+    margin-top: auto;
+    font-size: 0.85em;
+    padding: var(--spacing-sm) 0; /* Adicionado padding para separar do fundo */
+    text-align: center; /* Centralizar texto */
+    color: var(--text-color-base); /* Cor padrão para texto do footer */
+}
+
+/* ========================================= */
+/* 5. Componentes                            */
+/* ========================================= */
+
+/* File Upload Area */
+.upload-area {
+    border: 2px dashed var(--tertiary-color);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-base);
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+    transition: border-color 0.3s ease;
+    width: 100%;
+    /* Estilo para drag over */
+    display: flex; /* Para centralizar conteúdo */
+    flex-direction: column; /* Conteúdo em coluna */
+    justify-content: center; /* Centralizar verticalmente */
+    align-items: center; /* Centralizar horizontalmente */
+    min-height: 150px; /* Altura mínima para a área de drop */
+}
+
+.upload-area.highlight { /* Classe para quando o arquivo é arrastado sobre */
+    border-color: var(--primary-color);
+    background-color: rgba(var(--primary-color-rgb), 0.1); /* Um fundo suave */
+}
+
+.upload-area p:first-of-type { /* Estilo para a mensagem de arrastar/soltar */
+    margin-bottom: var(--spacing-sm);
+    font-size: 1.1em;
+    color: var(--text-color-base);
+}
+
+.upload-area input[type="file"] {
+    display: none;
+}
+
+.upload-area label {
+    display: block;
+    cursor: pointer;
+    background-color: var(--tertiary-color);
+    color: var(--light-color);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-base);
+    margin-top: var(--spacing-sm);
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.upload-area label:hover {
+    background-color: var(--primary-color);
+}
+
+.file-info {
+    margin-top: var(--spacing-sm);
+    font-size: 0.9em;
+    color: #666;
+    font-style: italic; /* Adicionado estilo para info de arquivo */
+}
+
+/* Control Buttons */
+.button-group {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
+
+.button-start {
+    background-color: var(--primary-color);
+    color: var(--light-color);
+}
+
+.button-start:hover {
+    background-color: #45a049;
+}
+
+.button-reset {
+    background-color: var(--secondary-color);
+    color: var(--dark-color); /* Texto azul no botão amarelo */
+}
+
+.button-reset:hover {
+    background-color: #e6b100;
+}
+
+.button-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+    box-shadow: none; /* Remover sombra em disabled */
+    transform: none; /* Remover hover effect em disabled */
+}
+
+/* Mensagens de Feedback */
+.message {
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-base);
+    margin-top: var(--spacing-md);
+    font-size: 0.95em;
+    text-align: center;
+    width: 100%;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.message.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* Estilos para a lista de nomes sorteados */
+.drawn-names-list {
+    margin-top: var(--spacing-lg);
+    width: 100%;
+    background-color: #f9f9f9;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-base);
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.drawn-names-list h3 {
+    font-size: 1.2em;
+    margin-bottom: var(--spacing-sm);
+    color: var(--tertiary-color); /* Título da lista azul */
+    text-align: left;
+}
+
+.drawn-names-list ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.drawn-names-list li {
+    padding: 8px 0;
+    border-bottom: 1px dashed #e0e0e0;
+    font-size: 1em;
+    color: var(--text-color-base);
+    display: flex;
+    align-items: center;
+}
+
+.drawn-names-list li:last-child {
+    border-bottom: none;
+}
+
+.drawn-names-list li::before {
+    content: '🎉';
+    margin-right: 8px;
+    font-size: 0.9em;
+}
+
+#noDrawnNamesMessage {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    margin-top: var(--spacing-sm);
+}
+
+/* Estilos do Pop-up */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.popup-overlay.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+.popup-content {
+    background-color: var(--background-dark);
+    color: var(--light-color);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-base);
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.5), 0 0 50px var(--primary-color);
+    text-align: center;
+    max-width: 90%;
+    width: 500px;
+    position: relative;
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+.popup-overlay.show .popup-content {
+    transform: scale(1);
+}
+
+.close-popup {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 2em;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-popup:hover {
+    color: var(--light-color);
+}
+
+.popup-message {
+    font-size: 1.5em;
+    color: var(--secondary-color);
+    margin-bottom: var(--spacing-md);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.popup-result {
+    font-size: 3.5em;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+    margin-bottom: var(--spacing-lg);
+    animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        color: var(--primary-color);
+    }
+    100% {
+        transform: scale(1.05);
+        color: var(--light-color);
+    }
+}
+
+#fireworks-container {
+    position: fixed; /* Mudar para fixed para tela cheia */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999; /* Z-index menor que o pop-up, mas acima de outros elementos */
+}
+
+/* ========================================= */
+/* 6. Responsividade                         */
+/* ========================================= */
+
+@media (max-width: 768px) {
+    .container {
+        padding: var(--spacing-md);
+        margin: var(--spacing-md) auto;
+        max-width: 90%;
+    }
+
+    .company-logo {
+        height: 60px;
+        max-width: 150px;
+        margin-bottom: 5px;
+    }
+
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    .popup-result {
+        font-size: 2.8em;
+    }
+
+    .button-group {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+
+    button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.3em;
+    }
+
+    .popup-result {
+        font-size: 2em;
+    }
+
+    .upload-area {
+        padding: var(--spacing-md);
+    }
+}

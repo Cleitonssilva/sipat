@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteador SIPAT 2025 | Agro-sol Sementes</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon"> 
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="logo-agrosol.png" alt="Logo Agro-sol Sementes" class="company-logo">
+            <h1>SIPAT 2025 | Sorteador de Nomes</h1>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="upload-area">
+            <p>Arraste e solte sua planilha aqui ou</p>
+            <input type="file" id="fileInput" accept=".xlsx, .xls, .csv">
+            <label for="fileInput">Carregar Planilha</label>
+            <p id="fileName" class="file-info"></p>
+        </section>
+
+        <div class="button-group">
+            <button id="startButton" class="button-start button-disabled" disabled>Iniciar Sorteio</button>
+            <button id="resetButton" class="button-reset button-disabled" disabled>Recomeçar Sorteio</button>
+        </div>
+
+        <p id="message" class="message info"></p>
+
+        <section class="drawn-names-list">
+            <h3>Nomes Sorteados:</h3>
+            <ul id="drawnNames">
+                </ul>
+            <p id="noDrawnNamesMessage">Nenhum nome sorteado ainda.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Agro-sol Sementes. Todos os direitos reservados.</p>
+    </footer>
+
+    <div id="resultPopup" class="popup-overlay">
+        <div class="popup-content">
+            <span class="close-popup">&times;</span>
+            <p class="popup-message">Parabéns!</p>
+            <p id="drawnNameResult" class="popup-result">Nome Sorteado</p>
+        </div>
+        <div id="fireworks-container"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
