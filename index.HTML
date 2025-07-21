@@ -1,61 +1,162 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sorteador SIPAT 2025 | Agro-sol Sementes</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon"> 
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sorteador SIPAT 2025 | Agro-sol Sementes</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    /* Variáveis de tema e estilos básicos movidos para style.css para melhor organização */
+    body {
+      transition: background-color 2s ease;
+    }
+
+    /* Estilos específicos do welcome-screen e animação do avião */
+    .welcome-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: white;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 1s ease, visibility 1s ease;
+    }
+    .welcome-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .welcome-screen h2 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: var(--color3); /* Usando variável de tema */
+    }
+    .welcome-screen button {
+      background-color: var(--color4); /* Usando variável de tema */
+      color: white;
+      padding: 12px 24px;
+      font-size: 1.1em;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+    }
+    .airplane-image {
+      width: 150px; /* Ajuste o tamanho conforme necessário */
+      height: auto;
+      margin-bottom: 30px;
+      animation: flyIn 2s ease-out forwards;
+    }
+
+    @keyframes flyIn {
+      0% {
+        transform: translateX(-100vw) rotate(0deg);
+      }
+      100% {
+        transform: translateX(0) rotate(5deg); /* Leve rotação no final */
+      }
+    }
+  </style>
 </head>
-<body>
-    <header>
-        <div class="header-content">
-            <img src="logo-agrosol.png" alt="Logo Agro-sol Sementes" class="company-logo">
-            <h1>SIPAT 2025 | Sorteio </h1>
-        </div>
-    </header>
+<body class="theme-1">
+  <div id="welcomeScreen" class="welcome-screen">
+    <img src="airplane.png" alt="Avião de Papel" class="airplane-image">
+    <h2>🎉 Bem-vindo à SIPAT 2025!</h2>
+    <p>Prepare-se para o sorteio interativo da Agro-sol.</p>
+    <button id="enterButton">Entrar no Sorteio</button>
+  </div>
 
-    <main class="container">
-        <section class="upload-area">
-            <p>Arraste e solte sua planilha aqui ou</p>
-            <input type="file" id="fileInput" accept=".xlsx, .xls, .csv">
-            <label for="fileInput">Carregar Planilha</label>
-            <p id="fileName" class="file-info"></p>
-        </section>
+  <header>
+    <div class="header-content">
+      <img src="logo-agrosol.png" alt="Logo Agro-sol Sementes" class="company-logo">
+      <h1>SIPAT 2025 | Sorteio</h1>
+    </div>
+  </header>
 
-        <div class="button-group">
-            <button id="startButton" class="button-start button-disabled" disabled>Iniciar Sorteio</button>
-            <button id="resetButton" class="button-reset button-disabled" disabled>Recomeçar Sorteio</button>
-        </div>
+  <main class="container">
+    <section class="upload-area" id="uploadArea">
+      <p>Arraste e solte sua planilha aqui ou</p>
+      <input type="file" id="fileInput" accept=".xlsx, .xls, .csv">
+      <label for="fileInput">Carregar Planilha</label>
+      <p id="fileName" class="file-info"></p>
+    </section>
 
-        <p id="message" class="message info"></p>
-
-        <section class="drawn-names-list">
-            <h3>Nomes Sorteados:</h3>
-            <ul id="drawnNames">
-                </ul>
-            <p id="noDrawnNamesMessage">Nenhum nome sorteado ainda.</p>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 Agro-sol Sementes. Todos os direitos reservados.</p>
-    </footer>
-
-    <div id="resultPopup" class="popup-overlay">
-        <div class="popup-content">
-            <span class="close-popup">&times;</span>
-            <p class="popup-message">Parabéns!</p>
-            <p id="drawnNameResult" class="popup-result">Nome Sorteado</p>
-        </div>
-        <div id="fireworks-container"></div>
+    <div class="button-group">
+      <button id="startButton" class="button-start button-disabled" disabled>Iniciar Sorteio</button>
+      <button id="resetButton" class="button-reset button-disabled" disabled>Recomeçar Sorteio</button>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script src="script.js"></script>
+    <div class="progress-info">
+      🎯 Restam <span id="remainingCount">0</span> nomes a sortear.
+    </div>
+
+    <p id="message" class="message info" aria-live="polite"></p>
+
+    <section class="drawn-names-list">
+      <h3>Nomes Sorteados:</h3>
+      <ul id="drawnNames"></ul>
+      <p id="noDrawnNamesMessage">Nenhum nome sorteado ainda.</p>
+    </section>
+
+    <button id="loadAnotherSheetButton" class="back-button hidden">Carregar Outra Planilha</button>
+    <button id="backButton" class="back-button hidden">🔙 Voltar à Apresentação</button>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Agro-sol Sementes. Todos os direitos reservados.</p>
+  </footer>
+
+  <div id="resultPopup" class="popup-overlay">
+    <div class="popup-content">
+      <span class="close-popup">&times;</span>
+      <p class="popup-message">Parabéns!</p>
+      <p id="drawnNameResult" class="popup-result">Nome Sorteado</p>
+      <lottie-player src="https://assets7.lottiefiles.com/packages/lf20_ydo1amjm.json"
+        background="transparent" speed="1" autoplay loop
+        style="width: 300px; height: 300px; margin: 0 auto;"></lottie-player>
+    </div>
+    <div id="fireworks-container"></div>
+  </div>
+
+  <audio id="drawSound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3" preload="auto"></audio>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="script.js"></script>
+  <script>
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    const backButton = document.getElementById('backButton');
+    const enterButton = document.getElementById('enterButton');
+    const themes = ['theme-1', 'theme-2', 'theme-3', 'theme-4', 'theme-5'];
+    let currentTheme = 0;
+
+    enterButton.addEventListener('click', () => {
+      welcomeScreen.classList.add('hidden');
+      backButton.classList.remove('hidden');
+    });
+
+    backButton.addEventListener('click', () => {
+      welcomeScreen.classList.remove('hidden');
+      backButton.classList.add('hidden');
+      // A visibilidade do botão 'loadAnotherSheetButton' e 'uploadArea'
+      // agora é gerenciada dentro do script.js na função handleFileUpload
+      // e no evento do 'loadAnotherSheetButton'.
+    });
+
+    setInterval(() => {
+      document.body.classList.remove(themes[currentTheme]);
+      currentTheme = (currentTheme + 1) % themes.length;
+      document.body.classList.add(themes[currentTheme]);
+    }, 15000);
+  </script>
 </body>
 </html>
