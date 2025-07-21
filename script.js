@@ -12,17 +12,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadArea = document.querySelector('.upload-area');
     const remainingCount = document.getElementById('remainingCount');
     const drawSound = document.getElementById('drawSound');
-    const loadAnotherSheetButton = document.getElementById('loadAnotherSheetButton'); // Novo botão
-
-    // Constantes para o confete
-    const CONFETTI_DURATION = 15 * 1000;
-    const CONFETTI_PARTICLE_COUNT = 50;
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    const backButton = document.getElementById('backButton');
+    const enterButton = document.getElementById('enterButton');
+    const loadAnotherSheetButton = document.getElementById('loadAnotherSheetButton'); // Certifique-se que este elemento existe no seu HTML
 
     let allNames = [];
     let availableNames = [];
     let drawnNames = [];
     let isFileLoaded = false;
-    let loadedFileName = ''; // Armazena o nome do arquivo original
+
+    // Chaves para o localStorage
+    const ALL_NAMES_KEY = 'sipat_allNames';
+    const AVAILABLE_NAMES_KEY = 'sipat_availableNames';
+    const DRAWN_NAMES_KEY = 'sipat_drawnNames';
+    const IS_FILE_LOADED_KEY = 'sipat_isFileLoaded';
 
     const showMessage = (msg, type) => {
         messageDisplay.textContent = msg;
@@ -40,168 +44,201 @@ document.addEventListener('DOMContentLoaded', () => {
         startButton.disabled = !isFileLoaded || availableNames.length === 0;
         startButton.classList.toggle('button-disabled', startButton.disabled);
 
-        resetButton.disabled = !isFileLoaded && drawnNames.length === 0;
+        resetButton.disabled = !isFileLoaded && drawnNames.length === 0 && availableNames.length === 0;
         resetButton.classList.toggle('button-disabled', resetButton.disabled);
 
-        // Ocultar/Exibir botão "Carregar Outra Planilha"
-        if (isFileLoaded) {
-            loadAnotherSheetButton.classList.remove('hidden');
-        } else {
-            loadAnotherSheetButton.classList.add('hidden');
-        }
-    };
-
-    const updateRemainingDisplay = () => {
-        if (remainingCount) {
-            remainingCount.textContent = availableNames.length;
-        }
+        // Atualiza a contagem de nomes restantes
+        remainingCount.textContent = `Nomes Restantes: ${availableNames.length}`;
     };
 
     const renderDrawnNames = () => {
         drawnNamesList.innerHTML = '';
-
         if (drawnNames.length === 0) {
             noDrawnNamesMessage.style.display = 'block';
-            drawnNamesList.style.display = 'none';
         } else {
             noDrawnNamesMessage.style.display = 'none';
-            drawnNamesList.style.display = 'block';
             drawnNames.forEach(name => {
                 const li = document.createElement('li');
                 li.textContent = name;
                 drawnNamesList.appendChild(li);
             });
         }
-        updateRemainingDisplay();
     };
 
     const showResultPopup = (name) => {
         drawnNameResult.textContent = name;
         resultPopup.classList.add('show');
-
-        const animationEnd = Date.now() + CONFETTI_DURATION;
-        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
-        function randomInRange(min, max) {
-            return Math.random() * (max - min) + min;
+        if (typeof confetti === 'function') {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
         }
-
-        const interval = setInterval(() => {
-            const timeLeft = animationEnd - Date.now();
-            if (timeLeft <= 0) {
-                return clearInterval(interval);
-            }
-            const particleCount = CONFETTI_PARTICLE_COUNT * (timeLeft / CONFETTI_DURATION);
-            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-        }, 250);
-
-        if (drawSound) drawSound.play();
+        if (drawSound) {
+            drawSound.play();
+        }
     };
 
     const hideResultPopup = () => {
         resultPopup.classList.remove('show');
     };
 
+    // Função para salvar o estado no localStorage
+    const saveState = () => {
+        localStorage.setItem(ALL_NAMES_KEY, JSON.stringify(allNames));
+        localStorage.setItem(AVAILABLE_NAMES_KEY, JSON.stringify(availableNames));
+        localStorage.setItem(DRAWN_NAMES_KEY, JSON.stringify(drawnNames));
+        localStorage.setItem(IS_FILE_LOADED_KEY, JSON.stringify(isFileLoaded));
+        // console.log('Estado salvo:', { allNames, availableNames, drawnNames, isFileLoaded });
+    };
+
+    // Função para carregar o estado do localStorage
+    const loadState = () => {
+        const storedAllNames = localStorage.getItem(ALL_NAMES_KEY);
+        const storedAvailableNames = localStorage.getItem(AVAILABLE_NAMES_KEY);
+        const storedDrawnNames = localStorage.getItem(DRAWN_NAMES_KEY);
+        const storedIsFileLoaded = localStorage.getItem(IS_FILE_LOADED_KEY);
+
+        if (storedAllNames && storedAvailableNames && storedDrawnNames && storedIsFileLoaded) {
+            allNames = JSON.parse(storedAllNames);
+            availableNames = JSON.parse(storedAvailableNames);
+            drawnNames = JSON.parse(storedDrawnNames);
+            isFileLoaded = JSON.parse(storedIsFileLoaded);
+
+            if (isFileLoaded && allNames.length > 0) {
+                // Se os dados foram carregados e um arquivo estava carregado, pula a tela de boas-vindas
+                welcomeScreen.classList.add('hidden');
+                backButton.classList.remove('hidden');
+                uploadArea.classList.add('hidden'); // Esconde área de upload, pois o arquivo está carregado
+                loadAnotherSheetButton.classList.remove('hidden'); // Mostra botão para carregar outra planilha
+                fileNameDisplay.textContent = `Arquivo carregado (${allNames.length} nomes - restaurado)`;
+                showMessage('Dados do sorteio restaurados automaticamente!', 'info');
+            } else {
+                // Se isFileLoaded for falso ou não houver nomes, reinicia para o estado inicial
+                // Isso cobre casos onde o estado salvo está vazio ou inválido
+                allNames = [];
+                availableNames = [];
+                drawnNames = [];
+                isFileLoaded = false;
+                clearMessage(); // Limpa qualquer mensagem antiga
+            }
+            // console.log('Estado carregado:', { allNames, availableNames, drawnNames, isFileLoaded });
+            return true; // Estado carregado com sucesso
+        }
+        return false; // Nenhum estado para carregar
+    };
+
+
     const handleFileUpload = (file) => {
         if (!file) {
-            showMessage('Nenhum arquivo selecionado.', 'info');
+            showMessage('Nenhum arquivo selecionado.', 'error');
             return;
         }
 
         const reader = new FileReader();
-
         reader.onload = (e) => {
             try {
                 const data = new Uint8Array(e.target.result);
                 const workbook = XLSX.read(data, { type: 'array' });
                 const firstSheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[firstSheetName];
-                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-                const namesFromSheet = jsonData
-                    .slice(1)
-                    .map(row => (row[0] || '').toString().trim())
-                    .filter(name => name !== '');
+                // Assume a primeira coluna (índice 0) contém os nomes
+                // Filtra linhas vazias ou não-strings e remove espaços em branco
+                allNames = json.map(row => row[0]).filter(name => name && typeof name === 'string').map(name => name.trim());
 
-                if (namesFromSheet.length === 0) {
-                    showMessage('A planilha não contém nomes válidos na primeira coluna.', 'error');
+                if (allNames.length > 0) {
+                    availableNames = [...allNames]; // Reinicia nomes disponíveis para um novo arquivo
+                    drawnNames = []; // Limpa nomes sorteados para um novo arquivo
+                    isFileLoaded = true;
+                    fileNameDisplay.textContent = `Arquivo carregado: ${file.name} (${allNames.length} nomes)`;
+                    showMessage('Arquivo carregado com sucesso! Clique em Iniciar Sorteio.', 'success');
+                    uploadArea.classList.add('hidden');
+                    loadAnotherSheetButton.classList.remove('hidden');
+
+                    saveState(); // Salva o estado após o carregamento bem-sucedido
+                } else {
+                    showMessage('Nenhum nome encontrado na primeira coluna da planilha. Por favor, verifique o arquivo.', 'error');
                     isFileLoaded = false;
                     fileNameDisplay.textContent = '';
-                    loadedFileName = '';
-                    uploadArea.classList.remove('hidden'); // Certifica que a área de upload está visível em caso de erro
-                } else {
-                    allNames = [...namesFromSheet];
-                    availableNames = [...allNames];
-                    drawnNames = [];
-                    isFileLoaded = true;
-                    loadedFileName = file.name;
-                    fileNameDisplay.textContent = `Arquivo: ${loadedFileName} (${namesFromSheet.length} nomes)`;
-                    showMessage(`Planilha "${loadedFileName}" carregada com sucesso! ${namesFromSheet.length} nomes encontrados.`, 'success');
-                    renderDrawnNames();
-                    uploadArea.classList.add('hidden'); // Oculta a área de upload após sucesso
+                    uploadArea.classList.remove('hidden');
+                    loadAnotherSheetButton.classList.add('hidden');
+                    // Se o arquivo estiver vazio, garante que o localStorage também seja limpo
+                    localStorage.removeItem(ALL_NAMES_KEY);
+                    localStorage.removeItem(AVAILABLE_NAMES_KEY);
+                    localStorage.removeItem(DRAWN_NAMES_KEY);
+                    localStorage.setItem(IS_FILE_LOADED_KEY, JSON.stringify(false));
                 }
             } catch (error) {
-                console.error('Erro ao processar a planilha:', error);
-                showMessage('Erro ao ler a planilha. Certifique-se de que é um arquivo Excel/CSV válido.', 'error');
+                showMessage('Erro ao processar o arquivo. Certifique-se de que é uma planilha Excel válida.', 'error');
+                console.error("Erro ao ler arquivo:", error);
                 isFileLoaded = false;
-                loadedFileName = '';
-                uploadArea.classList.remove('hidden'); // Certifica que a área de upload está visível em caso de erro
-            } finally {
-                updateButtonStates();
+                fileNameDisplay.textContent = '';
+                uploadArea.classList.remove('hidden');
+                loadAnotherSheetButton.classList.add('hidden');
             }
-        };
-
-        reader.onerror = (error) => {
-            console.error('Erro ao ler o arquivo:', error);
-            showMessage('Não foi possível ler o arquivo.', 'error');
-            isFileLoaded = false;
-            loadedFileName = '';
-            uploadArea.classList.remove('hidden'); // Certifica que a área de upload está visível em caso de erro
+            renderDrawnNames();
             updateButtonStates();
         };
-
         reader.readAsArrayBuffer(file);
     };
 
     const drawName = () => {
         if (availableNames.length === 0) {
-            showMessage('Todos os nomes foram sorteados! Recomece para sortear novamente.', 'info');
+            showMessage('Todos os nomes foram sorteados! Clique em "Reiniciar Sorteio" para começar de novo.', 'info');
             startButton.disabled = true;
             startButton.classList.add('button-disabled');
             return;
         }
 
-        clearMessage();
-
         const randomIndex = Math.floor(Math.random() * availableNames.length);
-        const selectedName = availableNames[randomIndex];
+        const drawnName = availableNames[randomIndex];
 
-        availableNames.splice(randomIndex, 1);
-        drawnNames.unshift(selectedName);
+        drawnNames.push(drawnName);
+        availableNames.splice(randomIndex, 1); // Remove o nome sorteado da lista de disponíveis
 
+        showResultPopup(drawnName);
         renderDrawnNames();
-        showResultPopup(selectedName);
         updateButtonStates();
+        saveState(); // Salva o estado após sortear um nome
     };
 
     const resetSorteio = () => {
-        availableNames = [...allNames];
+        availableNames = [...allNames]; // Reinicia com base nos nomes originais carregados
         drawnNames = [];
-        isFileLoaded = allNames.length > 0;
-        fileNameDisplay.textContent = isFileLoaded ? `Arquivo: ${loadedFileName} (${allNames.length} nomes)` : '';
+        isFileLoaded = allNames.length > 0; // Se allNames estiver vazio, considera que não há arquivo carregado
+        fileNameDisplay.textContent = isFileLoaded ? `Arquivo carregado (${allNames.length} nomes)` : '';
         clearMessage();
-        showMessage('Sorteio reiniciado! Clique em Iniciar Sorteio ou em "Carregar Outra Planilha".', 'info');
+        showMessage('Sorteio reiniciado! Clique em Iniciar Sorteio.', 'info');
         renderDrawnNames();
         updateButtonStates();
-        // Não ocultar a área de upload no reset se já havia um arquivo carregado
-        // A área de upload só aparece no "Carregar Outra Planilha" ou se não houver nomes.
-        if (allNames.length === 0) { // Se não há nomes carregados (primeiro acesso ou reset total)
-            uploadArea.classList.remove('hidden');
+        saveState(); // Salva o estado após reiniciar
+        // Garante que a área de upload e o botão "Carregar Outra Planilha" estejam corretos
+        if (!isFileLoaded) {
+             uploadArea.classList.remove('hidden');
+             loadAnotherSheetButton.classList.add('hidden');
+        } else {
+             uploadArea.classList.add('hidden');
+             loadAnotherSheetButton.classList.remove('hidden');
         }
     };
 
-    // Event Listeners
+    // --- Lógica inicial de carregamento ao carregar a página ---
+    if (!loadState()) {
+        // Se nenhum estado foi carregado (primeira vez ou localStorage limpo), garante o estado inicial da UI
+        welcomeScreen.classList.remove('hidden');
+        backButton.classList.add('hidden');
+        uploadArea.classList.remove('hidden');
+        loadAnotherSheetButton.classList.add('hidden');
+        clearMessage();
+    }
+    renderDrawnNames(); // Renderiza os nomes sorteados (se houver) ao iniciar
+    updateButtonStates(); // Atualiza o estado dos botões ao iniciar
+
+
+    // --- Event Listeners ---
     fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         handleFileUpload(file);
@@ -226,21 +263,6 @@ document.addEventListener('DOMContentLoaded', () => {
     startButton.addEventListener('click', drawName);
     resetButton.addEventListener('click', resetSorteio);
 
-    // Evento para o novo botão "Carregar Outra Planilha"
-    loadAnotherSheetButton.addEventListener('click', () => {
-        uploadArea.classList.remove('hidden'); // Mostra a área de upload
-        clearMessage(); // Limpa a mensagem atual
-        fileNameDisplay.textContent = ''; // Limpa o nome do arquivo exibido
-        isFileLoaded = false; // Reseta o estado de arquivo carregado
-        allNames = []; // Limpa todos os nomes
-        availableNames = []; // Limpa nomes disponíveis
-        drawnNames = []; // Limpa nomes sorteados
-        renderDrawnNames(); // Atualiza a lista de nomes sorteados (que estará vazia)
-        updateButtonStates(); // Atualiza o estado dos botões
-        showMessage('Carregue sua nova planilha para continuar.', 'info');
-    });
-
-
     closePopup.addEventListener('click', hideResultPopup);
     resultPopup.addEventListener('click', (event) => {
         if (event.target === resultPopup) {
@@ -248,9 +270,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Inicialização
-    updateButtonStates();
-    renderDrawnNames();
-    showMessage('Carregue sua planilha para começar!', 'info');
-    uploadArea.classList.remove('hidden'); // Garante que a área de upload esteja visível no início
+    // Lógica da tela de boas-vindas
+    enterButton.addEventListener('click', () => {
+        welcomeScreen.classList.add('hidden');
+        backButton.classList.remove('hidden');
+        // A área de upload é inicialmente visível se nenhum arquivo foi carregado do localStorage.
+        // Se um arquivo foi carregado via localStorage, uploadArea já estará hidden.
+    });
+
+    backButton.addEventListener('click', () => {
+        welcomeScreen.classList.remove('hidden');
+        backButton.classList.add('hidden');
+        loadAnotherSheetButton.classList.add('hidden'); // Esconde botão de carregar outra planilha
+        uploadArea.classList.remove('hidden'); // Mostra área de upload
+        clearMessage(); // Limpa qualquer mensagem
+        fileNameDisplay.textContent = ''; // Limpa nome do arquivo
+        
+        // Ao voltar para a tela inicial, limpa o localStorage para um novo sorteio
+        localStorage.removeItem(ALL_NAMES_KEY);
+        localStorage.removeItem(AVAILABLE_NAMES_KEY);
+        localStorage.removeItem(DRAWN_NAMES_KEY);
+        localStorage.removeItem(IS_FILE_LOADED_KEY);
+        
+        // Também reinicia as variáveis em memória
+        allNames = [];
+        availableNames = [];
+        drawnNames = [];
+        isFileLoaded = false;
+        renderDrawnNames(); // Limpa nomes sorteados na tela
+        updateButtonStates(); // Atualiza o estado dos botões
+    });
+
+    // Event listener para o botão "Carregar Outra Planilha"
+    loadAnotherSheetButton.addEventListener('click', () => {
+        uploadArea.classList.remove('hidden'); // Mostra a área de upload
+        loadAnotherSheetButton.classList.add('hidden'); // Esconde este botão
+        fileNameDisplay.textContent = ''; // Limpa o nome do arquivo atual
+        clearMessage(); // Limpa mensagens
+
+        // Opcional: Você pode querer limpar os dados em memória aqui
+        // se carregar uma nova planilha deve ser um "reset" completo.
+        // Por enquanto, apenas disponibiliza a UI para carregar.
+        // O handleFileUpload cuidará de resetar as listas.
+    });
 });
