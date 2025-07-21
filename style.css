@@ -3,6 +3,7 @@
 /* ========================================= */
 :root {
     --primary-color: #4CAF50; /* Verde para sucesso/iniciar sorteio */
+    --primary-color-rgb: 76, 175, 80; /* RGB para uso com rgba() */
     --secondary-color: #FFC107; /* Amarelo para atenção/recomeçar */
     --tertiary-color: #03A9F4; /* Azul para elementos de informação */
     --danger-color: #F44336; /* Vermelho para erros */
@@ -18,6 +19,13 @@
     --spacing-sm: 10px;
     --spacing-md: 20px;
     --spacing-lg: 30px;
+
+    /* Variáveis de tema para a transição de cores (solid color) */
+    --color1: #ffd500;
+    --color2: #fbba00;
+    --color3: #46772e;
+    --color4: #f39200;
+    --color5: #ec6608;
 }
 
 /* ========================================= */
@@ -36,17 +44,45 @@ body {
     font-family: var(--font-family-base);
     line-height: var(--line-height-base);
     color: var(--text-color-base);
-    background-color: var(--background-light);
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    /* Transição para suavizar a mudança da cor de fundo sólida */
+    transition: background-color 2s ease;
 }
 
+/* Classes de tema dinâmicas para o body (solid color) */
+.theme-1 { background-color: var(--color1); color: #000; }
+.theme-2 { background-color: var(--color2); color: #000; }
+.theme-3 { background-color: var(--color3); color: #fff; }
+.theme-4 { background-color: var(--color4); color: #000; }
+.theme-5 { background-color: var(--color5); color: #fff; }
+
+
 h1, h2, h3 {
-    color: var(--dark-color); /* Usando o azul escuro para títulos */
+    color: var(--dark-color);
     margin-bottom: var(--spacing-md);
     text-align: center;
 }
+
+/* Estilos de h1 no header, adaptados por tema */
+header h1 {
+    transition: color 1s ease;
+    font-size: 2.2em;
+    font-weight: 700;
+    margin-top: 8px;
+}
+/* Cores do h1 do header baseadas nas classes de tema do body */
+.theme-1 header h1,
+.theme-2 header h1,
+.theme-4 header h1 {
+  color: #000;
+}
+.theme-3 header h1,
+.theme-5 header h1 {
+  color: #fff;
+}
+
 
 p {
     margin-bottom: var(--spacing-sm);
@@ -80,6 +116,31 @@ button:active {
     transform: translateY(0);
 }
 
+/* Estilo para botões desabilitados */
+.button-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Estilo para botões de "Voltar" */
+.back-button {
+    margin-top: 20px;
+    background-color: var(--color3);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.back-button.hidden {
+  display: none;
+}
+
+
 /* ========================================= */
 /* 4. Layout                                 */
 /* ========================================= */
@@ -98,12 +159,12 @@ button:active {
 }
 
 header {
-    background-color: var(--light-color); /* Barra branca */
-    color: var(--dark-color); /* Cor do texto no cabeçalho (azul) */
+    background-color: transparent;
+    color: var(--dark-color);
     text-align: center;
     padding: var(--spacing-md) 0;
     width: 100%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Sombra para a barra branca */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .header-content {
@@ -116,38 +177,34 @@ header {
 }
 
 .company-logo {
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: background-color 0.5s ease;
     height: 80px;
     max-width: 200px;
     object-fit: contain;
     margin-bottom: 8px;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6), /* Brilho branco */
-                0 0 25px var(--secondary-color); /* Sombra amarela (mais direta) */
-    border-radius: var(--border-radius-base); /* Usar a variável */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6),
+                0 0 25px var(--secondary-color),
+                2px 2px 4px rgba(0, 0, 0, 0.5);
     padding: 5px;
-    background-color: rgba(0, 0, 0, 0.05);
-    /* Transição para efeito hover */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .company-logo:hover {
-    transform: scale(1.05); /* Pequeno zoom no hover */
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8), /* Brilho mais forte */
-                0 0 35px var(--secondary-color); /* Sombra amarela mais forte */
-}
-
-header h1 {
-    margin-bottom: 0;
-    font-size: 2em;
-    text-align: center;
-    color: var(--dark-color); /* Título azul no cabeçalho */
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+                0 0 35px var(--secondary-color),
+                4px 4px 8px rgba(0, 0, 0, 0.6);
 }
 
 footer {
     margin-top: auto;
     font-size: 0.85em;
-    padding: var(--spacing-sm) 0; /* Adicionado padding para separar do fundo */
-    text-align: center; /* Centralizar texto */
-    color: var(--text-color-base); /* Cor padrão para texto do footer */
+    padding: var(--spacing-sm) 0;
+    text-align: center;
+    color: var(--text-color-base);
 }
 
 /* ========================================= */
@@ -161,22 +218,31 @@ footer {
     border-radius: var(--border-radius-base);
     text-align: center;
     margin-bottom: var(--spacing-lg);
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, opacity 0.5s ease, visibility 0.5s ease, height 0.5s ease, margin-bottom 0.5s ease, padding 0.5s ease;
     width: 100%;
-    /* Estilo para drag over */
-    display: flex; /* Para centralizar conteúdo */
-    flex-direction: column; /* Conteúdo em coluna */
-    justify-content: center; /* Centralizar verticalmente */
-    align-items: center; /* Centralizar horizontalmente */
-    min-height: 150px; /* Altura mínima para a área de drop */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 150px;
 }
 
-.upload-area.highlight { /* Classe para quando o arquivo é arrastado sobre */
+.upload-area.hidden {
+    opacity: 0;
+    visibility: hidden;
+    height: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+}
+
+.upload-area.highlight {
     border-color: var(--primary-color);
-    background-color: rgba(var(--primary-color-rgb), 0.1); /* Um fundo suave */
+    background-color: rgba(var(--primary-color-rgb), 0.1);
 }
 
-.upload-area p:first-of-type { /* Estilo para a mensagem de arrastar/soltar */
+.upload-area p:first-of-type {
     margin-bottom: var(--spacing-sm);
     font-size: 1.1em;
     color: var(--text-color-base);
@@ -206,7 +272,7 @@ footer {
     margin-top: var(--spacing-sm);
     font-size: 0.9em;
     color: #666;
-    font-style: italic; /* Adicionado estilo para info de arquivo */
+    font-style: italic;
 }
 
 /* Control Buttons */
@@ -230,19 +296,11 @@ footer {
 
 .button-reset {
     background-color: var(--secondary-color);
-    color: var(--dark-color); /* Texto azul no botão amarelo */
+    color: var(--dark-color);
 }
 
 .button-reset:hover {
     background-color: #e6b100;
-}
-
-.button-disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    pointer-events: none;
-    box-shadow: none; /* Remover sombra em disabled */
-    transform: none; /* Remover hover effect em disabled */
 }
 
 /* Mensagens de Feedback */
@@ -289,7 +347,7 @@ footer {
 .drawn-names-list h3 {
     font-size: 1.2em;
     margin-bottom: var(--spacing-sm);
-    color: var(--tertiary-color); /* Título da lista azul */
+    color: var(--tertiary-color);
     text-align: left;
 }
 
@@ -407,13 +465,13 @@ footer {
 }
 
 #fireworks-container {
-    position: fixed; /* Mudar para fixed para tela cheia */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 999; /* Z-index menor que o pop-up, mas acima de outros elementos */
+    z-index: 999;
 }
 
 /* ========================================= */
