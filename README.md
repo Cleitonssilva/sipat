@@ -1,4 +1,4 @@
-# 🎉 Sorteador de Nomes - SIPAT 2025 | Agro-sol Sementes 🎉
+# 🎉 Sorteador de Nomes 🎉
 
 ---
 
