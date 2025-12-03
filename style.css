@@ -2,34 +2,20 @@
 /* 1. Variáveis                              */
 /* ========================================= */
 :root {
-    --primary-color: #4CAF50; /* Verde para sucesso/iniciar sorteio */
-    --primary-color-rgb: 76, 175, 80; /* RGB para uso com rgba() */
-    --secondary-color: #FFC107; /* Amarelo para atenção/recomeçar */
-    --tertiary-color: #03A9F4; /* Azul para elementos de informação */
-    --danger-color: #F44336; /* Vermelho para erros */
-    --dark-color: #4682B4; /* Azul escuro (Steel Blue) para títulos e outros */
+    --primary-color: #4CAF50; /* Verde Agro */
+    --primary-color-rgb: 76, 175, 80;
+    --secondary-color: #FFC107; /* Amarelo Agro */
+    --tertiary-color: #03A9F4;
+    --danger-color: #F44336;
+    --dark-color: #333;
     --light-color: #fff;
-    --background-light: #f4f4f4; /* Fundo geral claro */
-    --background-dark: #212121; /* Fundo do pop-up */
     --font-family-base: 'Roboto', sans-serif;
-    --line-height-base: 1.6;
-    --text-color-base: #444; /* Cor padrão para textos */
-    --border-radius-base: 5px;
-    --box-shadow-base: 0 4px 8px rgba(0,0,0,0.1);
-    --spacing-sm: 10px;
-    --spacing-md: 20px;
-    --spacing-lg: 30px;
-
-    /* Variáveis de tema para a transição de cores (solid color) */
-    --color1: #ffd500;
-    --color2: #fbba00;
-    --color3: #46772e;
-    --color4: #f39200;
-    --color5: #ec6608;
+    --border-radius-base: 8px;
+    --box-shadow-base: 0 8px 16px rgba(0,0,0,0.2);
 }
 
 /* ========================================= */
-/* 2. Reset                                  */
+/* 2. Reset e Base                           */
 /* ========================================= */
 * {
     margin: 0;
@@ -37,366 +23,299 @@
     box-sizing: border-box;
 }
 
-/* ========================================= */
-/* 3. Base/Globais                           */
-/* ========================================= */
 body {
     font-family: var(--font-family-base);
-    line-height: var(--line-height-base);
-    color: var(--text-color-base);
+    line-height: 1.6;
+    color: var(--dark-color);
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    /* Transição para suavizar a mudança da cor de fundo sólida */
-    transition: background-color 2s ease;
+    
+    /* Configuração da Imagem de Fundo */
+    background: url('imagem_encontro2025.jpg') no-repeat center center fixed;
+    background-size: cover;
+    background-color: #2e2e2e; /* Fallback se a imagem falhar */
 }
 
-/* Classes de tema dinâmicas para o body (solid color) */
-.theme-1 { background-color: var(--color1); color: #000; }
-.theme-2 { background-color: var(--color2); color: #000; }
-.theme-3 { background-color: var(--color3); color: #fff; }
-.theme-4 { background-color: var(--color4); color: #000; }
-.theme-5 { background-color: var(--color5); color: #fff; }
-
-
 h1, h2, h3 {
-    color: var(--dark-color);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 20px;
     text-align: center;
 }
 
-/* Estilos de h1 no header, adaptados por tema */
-header h1 {
-    transition: color 1s ease;
-    font-size: 2.2em;
-    font-weight: 700;
-    margin-top: 8px;
-}
-/* Cores do h1 do header baseadas nas classes de tema do body */
-.theme-1 header h1,
-.theme-2 header h1,
-.theme-4 header h1 {
-  color: #000;
-}
-.theme-3 header h1,
-.theme-5 header h1 {
-  color: #fff;
-}
-
-
-p {
-    margin-bottom: var(--spacing-sm);
-}
-
-a {
-    text-decoration: none;
-    color: var(--primary-color);
-    transition: color 0.3s ease;
-}
-
-a:hover {
-    color: var(--secondary-color);
-}
-
-button {
-    cursor: pointer;
-    border: none;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--border-radius-base);
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    text-transform: uppercase;
-}
-
-button:hover {
-    transform: translateY(-2px);
-}
-
-button:active {
-    transform: translateY(0);
-}
-
-/* Estilo para botões desabilitados */
-.button-disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    pointer-events: none;
-    box-shadow: none;
-    transform: none;
-}
-
-/* Estilo para botões de "Voltar" */
-.back-button {
-    margin-top: 20px;
-    background-color: var(--color3);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1em;
-    border-radius: 5px;
-    cursor: pointer;
-}
-.back-button.hidden {
-  display: none;
-}
-
-
 /* ========================================= */
-/* 4. Layout                                 */
+/* 3. Tela de Boas-Vindas                    */
 /* ========================================= */
-.container {
-    background-color: var(--light-color);
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius-base);
-    box-shadow: var(--box-shadow-base);
-    max-width: 600px;
-    margin: var(--spacing-lg) auto;
-    flex-grow: 1;
+.welcome-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    /* Fundo branco semi-transparente para destacar sobre a imagem de terra */
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 9999;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+    padding: 20px;
 }
 
+.welcome-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.welcome-content {
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.welcome-logo {
+    max-width: 250px;
+    margin-bottom: 20px;
+}
+
+.airplane-image {
+    width: 120px;
+    height: auto;
+    margin-bottom: 20px;
+    animation: flyIn 2s ease-out forwards;
+}
+
+@keyframes flyIn {
+    0% { transform: translateX(-100vw) rotate(-20deg); opacity: 0; }
+    100% { transform: translateX(0) rotate(0deg); opacity: 1; }
+}
+
+.welcome-screen h2 {
+    color: #333;
+    font-size: 2em;
+}
+
+.welcome-screen button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px 40px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 20px;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.welcome-screen button:hover {
+    transform: scale(1.05);
+    background-color: #43a047;
+}
+
+/* ========================================= */
+/* 4. Layout Principal                       */
+/* ========================================= */
 header {
-    background-color: transparent;
-    color: var(--dark-color);
     text-align: center;
-    padding: var(--spacing-md) 0;
-    width: 100%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 20px 0;
 }
 
 .header-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
+    /* Caixa branca suave atrás do logo/título para leitura */
+    background-color: rgba(255, 255, 255, 0.9);
+    display: inline-block;
+    padding: 10px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 .company-logo {
-    background-color: rgba(255, 255, 255, 0.85);
-    padding: 6px 10px;
-    border-radius: 8px;
-    transition: background-color 0.5s ease;
-    height: 80px;
-    max-width: 200px;
-    object-fit: contain;
-    margin-bottom: 8px;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6),
-                0 0 25px var(--secondary-color),
-                2px 2px 4px rgba(0, 0, 0, 0.5);
-    padding: 5px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 60px;
+    width: auto;
+    vertical-align: middle;
 }
 
-.company-logo:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
-                0 0 35px var(--secondary-color),
-                4px 4px 8px rgba(0, 0, 0, 0.6);
+header h1 {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 0 0 15px;
+    font-size: 1.8em;
+    color: #333;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.95); /* Quase opaco para leitura */
+    padding: 30px;
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--box-shadow-base);
+    max-width: 600px;
+    width: 95%;
+    margin: 20px auto;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 footer {
-    margin-top: auto;
-    font-size: 0.85em;
-    padding: var(--spacing-sm) 0;
     text-align: center;
-    color: var(--text-color-base);
-}
-
-/* ========================================= */
-/* 5. Componentes                            */
-/* ========================================= */
-
-/* File Upload Area */
-.upload-area {
-    border: 2px dashed var(--tertiary-color);
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius-base);
-    text-align: center;
-    margin-bottom: var(--spacing-lg);
-    transition: border-color 0.3s ease, opacity 0.5s ease, visibility 0.5s ease, height 0.5s ease, margin-bottom 0.5s ease, padding 0.5s ease;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 150px;
-}
-
-.upload-area.hidden {
-    opacity: 0;
-    visibility: hidden;
-    height: 0;
-    margin-bottom: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    overflow: hidden;
-}
-
-.upload-area.highlight {
-    border-color: var(--primary-color);
-    background-color: rgba(var(--primary-color-rgb), 0.1);
-}
-
-.upload-area p:first-of-type {
-    margin-bottom: var(--spacing-sm);
-    font-size: 1.1em;
-    color: var(--text-color-base);
-}
-
-.upload-area input[type="file"] {
-    display: none;
-}
-
-.upload-area label {
-    display: block;
-    cursor: pointer;
-    background-color: var(--tertiary-color);
-    color: var(--light-color);
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--border-radius-base);
-    margin-top: var(--spacing-sm);
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
-
-.upload-area label:hover {
-    background-color: var(--primary-color);
-}
-
-.file-info {
-    margin-top: var(--spacing-sm);
+    color: white; /* Texto branco para contrastar com o fundo escuro/terra */
+    padding: 20px;
     font-size: 0.9em;
-    color: #666;
-    font-style: italic;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
 }
 
-/* Control Buttons */
+/* ========================================= */
+/* 5. Componentes e Botões                   */
+/* ========================================= */
+button {
+    cursor: pointer;
+    border: none;
+    padding: 12px 20px;
+    border-radius: var(--border-radius-base);
+    font-weight: bold;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
 .button-group {
     display: flex;
-    gap: var(--spacing-md);
-    margin-top: var(--spacing-lg);
-    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
     justify-content: center;
     width: 100%;
 }
 
 .button-start {
     background-color: var(--primary-color);
-    color: var(--light-color);
+    color: white;
+    flex: 1;
 }
 
-.button-start:hover {
-    background-color: #45a049;
+.button-start:not(:disabled):hover {
+    background-color: #388E3C;
+    transform: translateY(-2px);
 }
 
 .button-reset {
     background-color: var(--secondary-color);
-    color: var(--dark-color);
+    color: #333;
+    flex: 1;
 }
 
-.button-reset:hover {
-    background-color: #e6b100;
+.button-reset:not(:disabled):hover {
+    background-color: #FFA000;
+    transform: translateY(-2px);
 }
 
-/* Mensagens de Feedback */
-.message {
-    padding: var(--spacing-sm);
+.button-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.back-button {
+    margin-top: 20px;
+    background-color: #555;
+    color: white;
+    width: 100%;
+}
+
+.back-button:hover {
+    background-color: #333;
+}
+
+.back-button.hidden { display: none; }
+
+/* Área de Upload */
+.upload-area {
+    border: 2px dashed #ccc;
+    padding: 30px;
     border-radius: var(--border-radius-base);
-    margin-top: var(--spacing-md);
-    font-size: 0.95em;
     text-align: center;
     width: 100%;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+    background: #f9f9f9;
 }
 
-.message.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+.upload-area.highlight {
+    border-color: var(--primary-color);
+    background-color: #e8f5e9;
 }
 
-.message.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+.upload-area.hidden { display: none; }
+
+.upload-area input[type="file"] { display: none; }
+
+.upload-area label {
+    display: inline-block;
+    margin-top: 10px;
+    background: #2196F3;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-.message.info {
-    background-color: #d1ecf1;
-    color: #0c5460;
-    border: 1px solid #bee5eb;
+/* Lista de Sorteados e Mensagens */
+.progress-info {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #555;
 }
 
-/* Estilos para a lista de nomes sorteados */
-.drawn-names-list {
-    margin-top: var(--spacing-lg);
+.message {
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
     width: 100%;
-    background-color: #f9f9f9;
-    padding: var(--spacing-md);
+    text-align: center;
+    display: none;
+}
+.message.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: block;}
+.message.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block;}
+.message.info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; display: block;}
+
+.drawn-names-list {
+    margin-top: 25px;
+    width: 100%;
+    background-color: #fff;
+    padding: 15px;
     border-radius: var(--border-radius-base);
-    max-height: 250px;
+    max-height: 200px;
     overflow-y: auto;
     border: 1px solid #eee;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
 }
 
-.drawn-names-list h3 {
-    font-size: 1.2em;
-    margin-bottom: var(--spacing-sm);
-    color: var(--tertiary-color);
-    text-align: left;
-}
-
-.drawn-names-list ul {
-    list-style: none;
-    padding-left: 0;
-}
-
+.drawn-names-list ul { list-style: none; }
 .drawn-names-list li {
     padding: 8px 0;
-    border-bottom: 1px dashed #e0e0e0;
-    font-size: 1em;
-    color: var(--text-color-base);
+    border-bottom: 1px solid #f0f0f0;
     display: flex;
     align-items: center;
 }
+.drawn-names-list li::before { content: '✅'; margin-right: 10px; }
 
-.drawn-names-list li:last-child {
-    border-bottom: none;
-}
-
-.drawn-names-list li::before {
-    content: '🎉';
-    margin-right: 8px;
-    font-size: 0.9em;
-}
-
-#noDrawnNamesMessage {
-    text-align: center;
-    color: #888;
-    font-style: italic;
-    margin-top: var(--spacing-sm);
-}
-
-/* Estilos do Pop-up */
+/* ========================================= */
+/* 6. Pop-up de Resultado                    */
+/* ========================================= */
 .popup-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 10000;
     visibility: hidden;
     opacity: 0;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .popup-overlay.show {
@@ -405,120 +324,48 @@ footer {
 }
 
 .popup-content {
-    background-color: var(--background-dark);
-    color: var(--light-color);
-    padding: var(--spacing-lg);
-    border-radius: var(--border-radius-base);
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.5), 0 0 50px var(--primary-color);
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
     text-align: center;
+    box-shadow: 0 0 50px rgba(76, 175, 80, 0.5); /* Brilho Verde */
+    position: relative;
     max-width: 90%;
     width: 500px;
-    position: relative;
     transform: scale(0.8);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s;
 }
 
-.popup-overlay.show .popup-content {
-    transform: scale(1);
-}
+.popup-overlay.show .popup-content { transform: scale(1); }
 
 .close-popup {
     position: absolute;
     top: 10px;
-    right: 15px;
+    right: 20px;
     font-size: 2em;
-    color: #aaa;
     cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.close-popup:hover {
-    color: var(--light-color);
+    color: #999;
 }
 
 .popup-message {
     font-size: 1.5em;
-    color: var(--secondary-color);
-    margin-bottom: var(--spacing-md);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    color: #888;
+    margin-bottom: 10px;
 }
 
 .popup-result {
-    font-size: 3.5em;
-    font-weight: bold;
+    font-size: 3em;
+    font-weight: 800;
     color: var(--primary-color);
-    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
-    margin-bottom: var(--spacing-lg);
-    animation: pulse 1.5s infinite alternate;
+    margin: 20px 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
 
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        color: var(--primary-color);
-    }
-    100% {
-        transform: scale(1.05);
-        color: var(--light-color);
-    }
-}
-
-#fireworks-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 999;
-}
-
-/* ========================================= */
-/* 6. Responsividade                         */
-/* ========================================= */
-
-@media (max-width: 768px) {
-    .container {
-        padding: var(--spacing-md);
-        margin: var(--spacing-md) auto;
-        max-width: 90%;
-    }
-
-    .company-logo {
-        height: 60px;
-        max-width: 150px;
-        margin-bottom: 5px;
-    }
-
-    header h1 {
-        font-size: 1.5em;
-    }
-
-    .popup-result {
-        font-size: 2.8em;
-    }
-
-    .button-group {
-        flex-direction: column;
-        gap: var(--spacing-sm);
-    }
-
-    button {
-        width: 100%;
-    }
-}
-
-@media (max-width: 480px) {
-    h1 {
-        font-size: 1.3em;
-    }
-
-    .popup-result {
-        font-size: 2em;
-    }
-
-    .upload-area {
-        padding: var(--spacing-md);
-    }
+/* Responsividade */
+@media (max-width: 600px) {
+    header h1 { font-size: 1.2em; }
+    .company-logo { height: 40px; }
+    .popup-result { font-size: 2em; }
+    .container { padding: 15px; width: 95%; }
 }
