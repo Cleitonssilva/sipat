@@ -3,82 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sorteador SIPAT 2025 | Agro-sol Sementes</title>
+  <title>Sorteador Encontro 2025 | Agro-sol Sementes</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-  <style>
-    /* Variáveis de tema e estilos básicos movidos para style.css para melhor organização */
-    body {
-      transition: background-color 2s ease;
-    }
-
-    /* Estilos específicos do welcome-screen e animação do avião */
-    .welcome-screen {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: white;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      opacity: 1;
-      visibility: visible;
-      transition: opacity 1s ease, visibility 1s ease;
-    }
-    .welcome-screen.hidden {
-      opacity: 0;
-      visibility: hidden;
-    }
-    .welcome-screen h2 {
-      font-size: 2.5em;
-      margin-bottom: 20px;
-      color: var(--color3); /* Usando variável de tema */
-    }
-    .welcome-screen button {
-      background-color: var(--color4); /* Usando variável de tema */
-      color: white;
-      padding: 12px 24px;
-      font-size: 1.1em;
-      border-radius: 5px;
-      border: none;
-      cursor: pointer;
-    }
-    .airplane-image {
-      width: 150px; /* Ajuste o tamanho conforme necessário */
-      height: auto;
-      margin-bottom: 30px;
-      animation: flyIn 2s ease-out forwards;
-    }
-
-    @keyframes flyIn {
-      0% {
-        transform: translateX(-100vw) rotate(0deg);
-      }
-      100% {
-        transform: translateX(0) rotate(5deg); /* Leve rotação no final */
-      }
-    }
-  </style>
 </head>
-<body class="theme-1">
+<body>
+  
   <div id="welcomeScreen" class="welcome-screen">
-    <img src="airplane.png" alt="Avião de Papel" class="airplane-image">
-    <h2>🎉 Bem-vindo à SIPAT 2025!</h2>
-    <p>Prepare-se para o sorteio interativo da Agro-sol.</p>
-    <button id="enterButton">Entrar no Sorteio</button>
+    <div class="welcome-content">
+        <img src="logo-agrosol.png" alt="Logo Agro-sol" class="welcome-logo">
+        <h2>🎉 Bem-vindo ao Encontro 2025!</h2>
+        <p>O Agro é Nosso! Prepare-se para os prêmios.</p>
+        <button id="enterButton">Entrar no Sorteio</button>
+    </div>
   </div>
 
   <header>
     <div class="header-content">
-      <img src="logo-agrosol.png" alt="Logo Agro-sol Sementes" class="company-logo">
-      <h1>SIPAT 2025 | Sorteio</h1>
+      <!--img src="logo-agrosol.png" alt="Logo Agro-sol Sementes" class="company-logo"-->
+      <h1>Sorteio</h1>
     </div>
   </header>
 
@@ -132,12 +79,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="script.js"></script>
+  
   <script>
     const welcomeScreen = document.getElementById('welcomeScreen');
     const backButton = document.getElementById('backButton');
     const enterButton = document.getElementById('enterButton');
-    const themes = ['theme-1', 'theme-2', 'theme-3', 'theme-4', 'theme-5'];
-    let currentTheme = 0;
 
     enterButton.addEventListener('click', () => {
       welcomeScreen.classList.add('hidden');
@@ -147,16 +93,7 @@
     backButton.addEventListener('click', () => {
       welcomeScreen.classList.remove('hidden');
       backButton.classList.add('hidden');
-      // A visibilidade do botão 'loadAnotherSheetButton' e 'uploadArea'
-      // agora é gerenciada dentro do script.js na função handleFileUpload
-      // e no evento do 'loadAnotherSheetButton'.
     });
-
-    setInterval(() => {
-      document.body.classList.remove(themes[currentTheme]);
-      currentTheme = (currentTheme + 1) % themes.length;
-      document.body.classList.add(themes[currentTheme]);
-    }, 15000);
   </script>
 </body>
 </html>
